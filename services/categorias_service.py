@@ -1,5 +1,5 @@
 from utils.baseDatos import BaseDatos
-from utils.utils import respuesta_json_success, respuesta_json_fail
+from utils.respuestas import respuesta_json_success, respuesta_json_fail
 
 def obtener_categorias():
         db = BaseDatos()
@@ -7,10 +7,11 @@ def obtener_categorias():
         return categorias
     
 
-def ingresar_categoria(valores_categoria):
+def ingresar_categoria(valores_categorias):
         db = BaseDatos()
         query = "INSERT INTO categorias (nombre_categoria, descripcion) VALUES (%s, %s)"
-        valores = (valores_categoria['nombre'], 
-                    valores_categoria['descripcion']
-                   )
-        db.ejecutar_accion(query, valores)
+        valores = (valores_categorias['nombre'], 
+                    valores_categorias['descripcion'])
+        print("Insertando categoría:", valores_categorias)
+        
+        db.ejecutar_accion(query,valores)
