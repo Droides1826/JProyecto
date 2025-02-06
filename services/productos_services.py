@@ -1,6 +1,6 @@
 import base64
 from utils.baseDatos import BaseDatos
-from utils.utils import  respuesta_json_fail, respuesta_json_success
+from utils.respuestas import  respuesta_json_fail, respuesta_json_success
 
 def convertir_imagen_base64(imagen_blob):
     return base64.b64encode(imagen_blob).decode('utf-8')

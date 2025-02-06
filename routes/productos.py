@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, redirect, url_for, render_template
-from utils.utils import respuesta_json_success, respuesta_json_fail
+from utils.respuestas import respuesta_json_success, respuesta_json_fail
 from services.productos_services import  ingresar_producto, obtener_datos_producto, convertir_imagen_base64, update_products
+from utils.Validaciones import validacion_de_nombre, validacion_de_cantidad,validacion_de_precio ,validacion_de_nombre,validacion_de_id_categoria
 
 productos = Blueprint('productos', __name__)
 
@@ -17,6 +18,22 @@ def create_product():
             'imagen': request.files['imagen'].read() if 'imagen' in request.files else None
         }
         
+        validacion_nombre = validacion_de_nombre(valores_producto['nombre'])
+        if validacion_nombre is not True:
+            return validacion_nombre
+        
+        validacion_precio = validacion_de_precio(valores_producto['precio'])
+        if validacion_precio is not True:
+            return validacion_precio
+        
+        validacion_cantidad = validacion_de_cantidad(valores_producto['cantidad'])
+        if validacion_cantidad is not True:
+            return validacion_cantidad
+        
+        validacion_id_categorias = validacion_de_id_categoria(valores_producto['id_categoria'])
+        if validacion_id_categorias is not True:
+            return validacion_id_categorias
+            
         ingresar_producto(valores_producto)
         return respuesta_json_success({'mensaje': 'Producto ingresado exitosamente'})
         
@@ -28,7 +45,6 @@ def obtener_producto():
     try:
         productos = obtener_datos_producto()
         
-        # Convertir las imágenes BLOB en base64 para el frontend
         for producto in productos:
             if producto['imagen']:
                 producto['imagen'] = convertir_imagen_base64(producto['imagen'])
