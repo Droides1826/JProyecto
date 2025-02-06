@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Detalles del Producto</title>
+  </head>
+  <body>
+    <h1>Detalles del Producto</h1>
+    <div id="producto"></div>
+
+    <script>
+      fetch(`/productos`)
+      .then((response) => response.json())
+      .then((productos) => {
+        console.log(productos); // Add this line to log the response
+        const productoDiv = document.getElementById("producto");
+
+        // Crear la estructura HTML para mostrar los datos
+        productos.forEach((producto) => {
+        const productoHTML = `
+          <div class="producto">
+          <h2>${producto.nombre}</h2>
+          <p><strong>Descripción:</strong> ${producto.descripcion}</p>
+          <p><strong>Precio:</strong> $${producto.precio}</p>
+          <p><strong>Categoría:</strong> ${producto.id_categoria}</p>
+          <p><strong>Cantidad:</strong> ${producto.cantidad}</p>
+          ${
+            producto.imagen
+            ? `<img src="data:image/jpeg;base64,${producto.imagen}" alt="Imagen del producto" width="300">`
+            : "<p>No hay imagen disponible</p>"
+          }
+          </div>
+        `;
+        productoDiv.innerHTML += productoHTML;
+        });
+      })
+      .catch((error) =>
+        console.error("Error al obtener los productos:", error)
+      );
+    </script>
+  </body>
+</html>

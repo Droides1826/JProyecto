@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compras - Categoría</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/index.css') }}"
+    />
+    <link rel="icon" href="{{ url_for('static', filename='img/logo.jpg') }}" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="/">
+        <img
+          class="logo"
+          src="{{ url_for('static', filename='img/logo.jpg') }}"
+          alt=""
+        />
+      </a>
+      <div class="menu">
+        {% for categoria in categorias %}
+        <a class="{{ categoria.nombre }}" href="/categoria/{{ categoria.id }}">{{ categoria.nombre }}</a>
+        {% endfor %}
+      </div>
+    </nav>
+
+    <div class="titulo3">
+      <h1>Productos de la Categoría</h1>
+    </div>
+
+    <div class="producto-container">
+      {% for producto in productos %}
+      <div class="hogar">
+        <img class="imagen" src="{{ url_for('static', filename='uploads/' ~ producto.nombre_imagen) }}" alt="">
+        <div class="card-hogar">
+          <h1 class="title1">{{ producto.nombre }}</h1>
+          <p>{{ producto.descripcion }}</p>
+          <p>Precio: {{ producto.precio }}</p>
+          <p>Cantidad: {{ producto.cantidad }}</p>
+          <button class="ver-mas-btn" data-nombre="{{ producto.nombre }}" data-imagen="{{ url_for('static', filename='uploads/' ~ producto.nombre_imagen) }}" data-descripcion="{{ producto.descripcion }}" data-precio="{{ producto.precio }}" data-cantidad="{{ producto.cantidad }}">Más información aqui</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div id="productModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1 id="modalTitle"></h1>
+        <img id="modalImage" src="" alt="">
+        <p id="modalDescription"></p>
+        <p id="modalPrecio"></p>
+        <p id="modalCantidad"></p>
+        <button id="buyButton">Comprar</button>
+      </div>
+    </div>
+    
+    <footer class="footer">
+      <p>&copy; 2025 Compras. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+  </body>
+</html>
