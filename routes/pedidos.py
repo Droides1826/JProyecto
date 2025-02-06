@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from services.pedidos_services import obtener_pedidos 
-from utils.utils import respuesta_json_success, respuesta_json_fail
+from utils.respuestas import respuesta_json_success, respuesta_json_fail
 
 pedidos = Blueprint('pedidos', __name__)
 
