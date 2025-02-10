@@ -79,9 +79,3 @@ def validacion_de_id_categoria(id_categoria: str) -> bool:
     if not es_solo_numeros(id_categoria):
         return respuesta_json_fail('El ID de la categoría solo puede contener números.')
     return True
-
-def validacion_producto_existente(producto: dict) -> bool:
-    if not producto:
-        return respuesta_json_fail('El producto no existe.')
-    return True
-
