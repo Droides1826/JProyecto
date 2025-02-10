@@ -1,6 +1,6 @@
-from flask import Blueprint, jsonify, request, redirect, url_for, render_template
+from flask import Blueprint, jsonify, request
 from utils.respuestas import respuesta_json_success, respuesta_json_fail
-from services.productos_services import  ingresar_producto, obtener_datos_producto, convertir_imagen_base64, update_products
+from services.productos_services import  ingresar_producto, obtener_datos_producto, convertir_imagen_base64, update_products, cambiar_estado_productos
 from utils.Validaciones import validacion_de_nombre, validacion_de_cantidad,validacion_de_precio ,validacion_de_nombre,validacion_de_id_categoria
 
 productos = Blueprint('productos', __name__)
@@ -69,5 +69,28 @@ def actualizar_producto():
         return respuesta_json_success({'mensaje': 'Producto actualizado exitosamente'})
     except Exception as e:
         return respuesta_json_fail(str(e))
+
+
+@productos.route('/cambiar_estado_producto', methods=['POST'])
+def cambiar_estado_producto():
+    try:
+        datos = request.get_json()
+        if not datos:
+            return respuesta_json_fail('No se enviaron datos para actualizar.', 400)
+        
+        valores_producto = {
+            'id_producto': datos['id_producto'],
+            'estado': datos['estado']
+        }
+        
+        filas_afectadas = cambiar_estado_productos(valores_producto)
+        
+        if filas_afectadas == 0:
+            return respuesta_json_fail('No se encontró el producto o no hubo cambios.', 404)
+        
+        return respuesta_json_success({'mensaje': 'Producto actualizado exitosamente'}, 200)
+    
+    except Exception as e:
+        return respuesta_json_fail(str(e), 500)
 
 
