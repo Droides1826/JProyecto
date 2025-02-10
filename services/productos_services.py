@@ -51,19 +51,44 @@ def ingresar_producto(valores_producto):
 def update_products(valores_producto):
     try:
         db = BaseDatos()
-        query = "UPDATE productos SET nombre = %s, descripcion = %s, precio = %s, id_categoria = %s, cantidad = %s, imagen = %s WHERE id_producto = %s"
-        valores = (
-            valores_producto['nombre'],
-            valores_producto['descripcion'],
-            valores_producto['precio'],
-            valores_producto['id_categoria'],
-            valores_producto['cantidad'],
-            valores_producto['imagen'],
-            valores_producto['id_producto']
-        )
-        db.ejecutar_accion(query, valores)
+        query = "UPDATE productos SET "
+        valores = []
+        campos = []
+
+        if 'nombre' in valores_producto:
+            campos.append("nombre = %s")
+            valores.append(valores_producto['nombre'])
+
+        if 'descripcion' in valores_producto:
+            campos.append("descripcion = %s")
+            valores.append(valores_producto['descripcion'])
+
+        if 'precio' in valores_producto:
+            campos.append("precio = %s")
+            valores.append(valores_producto['precio'])
+
+        if 'id_categoria' in valores_producto:
+            campos.append("id_categoria = %s")
+            valores.append(valores_producto['id_categoria'])
+
+        if 'cantidad' in valores_producto:
+            campos.append("cantidad = %s")
+            valores.append(valores_producto['cantidad'])
+
+        if 'imagen' in valores_producto:
+            campos.append("imagen = %s")
+            valores.append(valores_producto['imagen'])
+
+        if not campos:
+            return 0  
+
+        query += ", ".join(campos) + " WHERE id_producto = %s"
+        valores.append(valores_producto['id_producto'])
+
+        return db.ejecutar_accion(query, valores)
+    
     except Exception as e:
-        return respuesta_json_fail(str(e))
+        return respuesta_json_fail(str(e), 500)
 
 
 

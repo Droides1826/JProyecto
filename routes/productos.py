@@ -56,19 +56,31 @@ def obtener_producto():
 @productos.route('/actualizar_producto', methods=['POST'])
 def actualizar_producto():
     try:
+        datos = request.json
         valores_producto = {
-            'nombre': request.form['nombre'],
-            'descripcion': request.form['descripcion'],
-            'precio': request.form['precio'],
-            'id_categoria': request.form['id_categoria'],
-            'cantidad': request.form['cantidad'],
-            'imagen': request.files['imagen'].read() if 'imagen' in request.files else None,
-            'id_producto': request.form['id_producto']
+            'id_producto': datos.get('id_producto'),
+            'nombre': datos.get('nombre', '').strip(),
+            'descripcion': datos.get('descripcion', '').strip(),
+            'precio': datos.get('precio'),
+            'id_categoria': datos.get('id_categoria' ),
+            'cantidad': datos.get('cantidad'),
+            'imagen': request.files['imagen'].read() if 'imagen' in request.files else None
         }
-        update_products(valores_producto)
-        return respuesta_json_success({'mensaje': 'Producto actualizado exitosamente'})
+
+        valores_producto = {k: v for k, v in valores_producto.items() if v not in [None, '', ' ']}
+
+        if 'id_producto' not in valores_producto:
+            return respuesta_json_fail("El ID del producto es obligatorio.", 400)
+
+        filas_afectadas = update_products(valores_producto)
+
+        if filas_afectadas == 0:
+            return respuesta_json_fail("No se encontró el producto o no hubo cambios.", 404)
+
+        return respuesta_json_success({'mensaje': 'Producto actualizado exitosamente'}, 200)
+    
     except Exception as e:
-        return respuesta_json_fail(str(e))
+        return respuesta_json_fail(str(e), 500)
 
 
 @productos.route('/cambiar_estado_producto', methods=['POST'])
