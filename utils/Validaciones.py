@@ -15,7 +15,7 @@ def limite_caracteres(valor: str, max_length: int) -> bool:
 
 def es_solo_letras(valor: str) -> bool:
     """Verifica si el valor contiene solo letras."""
-    return valor.isalpha()
+    return valor.replace(" ","").isalpha()
 
 def es_correo_valido(correo: str) -> bool:
     """Verifica si el formato del correo es válido."""

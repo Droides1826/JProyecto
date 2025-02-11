@@ -5,20 +5,11 @@ from utils.Validaciones import es_solo_numeros,validacion_de_id_categoria ,valid
 
 pedidos = Blueprint('pedidos', __name__)
 
+
 @pedidos.route('/pedidos', methods=['GET'])
 def get_pedidos():
     try:
-        pedidos_db = obtener_pedidos()
-        
-        pedidos = []
-        for pedido in pedidos_db:
-            pedidos.append({
-                "id_pedido": pedido["id_pedido"],
-                "id_producto": pedido["id_producto"],
-                "cantidad": pedido["cantidad"],
-                "precio_unitario": float(pedido["precio_unitario"])  
-            })
-        
+        pedidos=obtener_pedidos()
         return respuesta_json_success(pedidos, 200)
 
     except Exception as e:
@@ -58,11 +49,6 @@ def actualizar_pedido():
             return respuesta_json_fail('Todos los campos deben estar rellenos', 400)
         if not es_solo_numeros(str(pedido["id_pedido"])):
             return respuesta_json_fail("id_pedido solo puede contener números.", 400)
-        
-            
-            
-           
-        
         return cambiar_estado_pedido(pedido)
     
     except Exception as e:

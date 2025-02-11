@@ -1,8 +1,8 @@
 from flask import Blueprint, request
 from utils.respuestas import respuesta_json_success, respuesta_json_fail
 from services.categorias_service import obtener_categorias, ingresar_categoria, actualizar_categoria, cambiar_estado_categoria	
-from utils.Validaciones import (es_solo_letras,tiene_caracteres_especiales,limite_caracteres
-)
+from utils.Validaciones import es_solo_numeros,es_solo_letras,tiene_caracteres_especiales,limite_caracteres
+
 
 
 categorias = Blueprint("categorias", __name__)
@@ -58,7 +58,8 @@ def create_categoria():
     except Exception as e:
         return respuesta_json_fail(str(e), 400)
 
-@categorias.route("/actualizar_categorias", methods=["POST, GET"])
+
+@categorias.route("/actualizar_categorias", methods=["PUT"])
 def actualizar_categorias():
     try:
         datos = request.get_json()
@@ -92,6 +93,7 @@ def actualizar_categorias():
     except Exception as e:
         return respuesta_json_fail(str(e), 500)
     
+
 @categorias.route("/cambiar_estado_categoria", methods=["POST"])
 def cambiar_estado_categorias():
     try:
@@ -103,11 +105,19 @@ def cambiar_estado_categorias():
             "id_categoria": datos.get("id_categoria"),
             "estado": datos.get("estado"),
         }
+        if not es_solo_numeros(valores_categorias["id_categoria"]):
+            return respuesta_json_fail("El id de la categoria solo puede contener numeros.", 400)
 
         filas_afectadas = cambiar_estado_categoria(valores_categorias)
 
         if filas_afectadas == 0:
             return respuesta_json_fail("No se encontró la categoría o no hubo cambios.", 404)
+        
+        if filas_afectadas == 1:
+            return respuesta_json_fail("La categoria ya se encuentra en ese estado", 200)
+        
+        if filas_afectadas == 2:
+            return respuesta_json_fail("No se puede cambiar el estado de la categoría : no existe, Debe ser Activo o Inactivo ", 400)
 
         return respuesta_json_success({"mensaje": "Categoría actualizada exitosamente"}, 200)
 
