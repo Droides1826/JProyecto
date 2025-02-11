@@ -58,12 +58,6 @@ def create_categoria():
     except Exception as e:
         return respuesta_json_fail(str(e), 400)
 
-@categorias.route("/actualizar_categorias", methods=["POST, GET"])
-def actualizar_categorias():
-    try:
-        datos = request.get_json()
-        if not datos:
-            return respuesta_json_fail("No se enviaron datos para actualizar.", 400)
 
         valores_categorias = {
             "id_categoria": datos.get("id_categoria"),
