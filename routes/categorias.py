@@ -77,7 +77,7 @@ def actualizar_categorias():
                 return respuesta_json_fail("El nombre no puede contener caracteres especiales.", 400)
             if not limite_caracteres(valores_categorias["nombre"], 30):
                 return respuesta_json_fail("El nombre no puede tener más de 30 caracteres.", 400)
-
+            
         if valores_categorias["descripcion"]:
             if not limite_caracteres(valores_categorias["descripcion"], 255):
                 return respuesta_json_fail("La descripción no puede tener más de 255 caracteres.", 400)

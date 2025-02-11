@@ -17,22 +17,19 @@ def get_pedidos():
 def ingresar_pedido():
     try:
         pedido = {
-            'id_producto': request.json['id_producto'],
-            'cantidad': request.json['cantidad'],
-            'precio_unitario': request.json['precio_unitario']
+            'id_producto': request.json.get('id_producto'),
+            'cantidad': request.json.get('cantidad'),
+            'precio_unitario': request.json.get('precio_unitario')
         }
-        if not pedido['id_producto'] or not [pedido['cantidad']] or not pedido['precio_unitario']:
+        if not pedido['id_producto'] or not pedido['cantidad'] or not pedido['precio_unitario']:
             return respuesta_json_fail('Todos los campos deben estar rellenos', 400)
-        
-        if not es_solo_numeros(pedido["id_producto"]) :
-            return respuesta_json_fail("id_producto solo puede contener numeros.", 400)
-        if not es_solo_numeros(pedido["cantidad"]) :
-            return respuesta_json_fail("cantidad solo pueden contener numeros.", 400)
-        if not es_solo_numeros(pedido["precio_unitario"]) :
-            return respuesta_json_fail("precio unitario solo pueden contener numeros.", 400)
-        
-        ingresar_pedidos(pedido)
-        return respuesta_json_success({'mensaje': 'Pedido ingresado exitosamente'}, 200)
+        if not es_solo_numeros(str(pedido["id_producto"])):
+            return respuesta_json_fail("id_producto solo puede contener números.", 400)
+        if not es_solo_numeros(str(pedido["cantidad"])):
+            return respuesta_json_fail("cantidad solo puede contener números.", 400)
+        if not es_solo_numeros(str(pedido["precio_unitario"])):
+            return respuesta_json_fail("precio_unitario solo puede contener números.", 400)
+        return ingresar_pedidos(pedido)
+
     except Exception as e:
         return respuesta_json_fail(str(e), 400)
-    
