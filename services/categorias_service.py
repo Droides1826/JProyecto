@@ -1,6 +1,5 @@
 from utils.baseDatos import BaseDatos
-activo = 1
-inactivo = 2
+
 
 def obtener_categorias():
     db = BaseDatos()
@@ -16,7 +15,7 @@ def obtener_categorias():
             'id_categoria': resultado[0],
             'nombre_categoria': resultado[1],
             'descripcion': resultado[2],
-            'estado': resultado[3],
+            'estado': 'activo' if resultado[3] == 1 else None
         }
         categorias.append(categoria)
 
@@ -37,9 +36,12 @@ def actualizar_categoria(valores_categorias):
     query = "UPDATE categorias SET "
     valores = []
     campos = []
+    existe = db.ejecutar_consulta("SELECT 1 FROM categorias WHERE id_categoria = %s AND nombre_categoria = %s",(valores_categorias['id_categoria'], valores_categorias['nombre']))
     valor = db.ejecutar_consulta("SELECT * FROM categorias WHERE id_categoria = %s", (valores_categorias['id_categoria'],))
     if not valor:
         return 0
+    if existe:
+        return 1
     if valores_categorias["nombre"]:
         campos.append("nombre_categoria = %s")
         valores.append(valores_categorias["nombre"])
@@ -61,21 +63,20 @@ def cambiar_estado_categoria(Valores_categorias):
     db = BaseDatos()
     id_categoria = Valores_categorias["id_categoria"]
     estado = Valores_categorias["estado"]
-    
-    if estado not in ['activo', 'inactivo']:
+    lower_estado = estado.lower()
+    if lower_estado not in ['activo', 'inactivo']:
         return 2
-    
+    if lower_estado == 'activo':
+        estado = 1
+    if lower_estado == 'inactivo':
+        estado = 2
     valor_antiguo = db.ejecutar_consulta("SELECT estado FROM categorias WHERE id_categoria = %s", (id_categoria,))
     
     if not valor_antiguo:
         return 0
     
-    if estado == valor_antiguo[0][0]:
+    if estado== valor_antiguo[0][0]:
         return 1
-    
-
-    
-    
     query = "UPDATE categorias SET estado = %s WHERE id_categoria = %s"
     valores = (estado, id_categoria)
     return db.ejecutar_accion(query, valores)

@@ -43,9 +43,9 @@ def es_contrasena_segura(contrasena: str) -> bool:
     patron = r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$'
     return bool(re.match(patron, contrasena))
 
-def es_solo_numeros(valor: str) -> bool:
+def es_solo_numeros(valor) -> bool:
     """Verifica si el valor contiene solo números."""
-    return valor.isdigit()
+    return str(valor).isdigit()
 
 
 def validacion_de_nombre(nombre: str) -> bool:

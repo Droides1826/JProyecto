@@ -28,7 +28,14 @@ def create_categoria():
             return respuesta_json_fail(
                 "El nombre de la categoría no puede estar vacío.", 400
             )
-
+        if es_solo_numeros(valores_categorias["nombre"]):
+            return respuesta_json_fail(
+                "El nombre de la categoría no puede ser solo números.", 400
+            )
+        if es_solo_numeros(valores_categorias["descripcion"]):
+            return respuesta_json_fail(
+                "La descripción de la categoría no puede ser solo números.", 400
+            )
         if not es_solo_letras(valores_categorias["nombre"]):
             return respuesta_json_fail(
                 "El nombre de la categoría solo puede contener letras.", 400
@@ -44,7 +51,8 @@ def create_categoria():
             return respuesta_json_fail(
                 "El nombre de la categoría no puede tener más de 30 caracteres.", 400
             )
-
+        
+        
         if not limite_caracteres(valores_categorias["descripcion"], 255):
             return respuesta_json_fail(
                 "La descripción no puede tener más de 255 caracteres.", 400
@@ -62,15 +70,21 @@ def create_categoria():
 @categorias.route("/actualizar_categorias", methods=["PUT"])
 def actualizar_categorias():
     try:
-        datos = request.get_json()
-        if not datos:
-            return respuesta_json_fail("No se enviaron datos para actualizar.", 400)
-
         valores_categorias = {
-            "id_categoria": datos.get("id_categoria"),
-            "nombre": datos.get("nombre", "").strip(),
-            "descripcion": datos.get("descripcion", "").strip(),
+            "id_categoria": request.json["id_categoria"],
+            "nombre": request.json["nombre"],
+            "descripcion": request.json["descripcion"],
         }
+
+        if not valores_categorias["nombre"] and not valores_categorias["descripcion"]:
+            return respuesta_json_fail("El ID y el nombre de la categoría son obligatorios.", 400)
+        
+        if not es_solo_numeros(valores_categorias["id_categoria"]):
+            return respuesta_json_fail("El ID de la categoría debe ser un número.", 400)
+        if es_solo_numeros(valores_categorias["nombre"]):
+            return respuesta_json_fail("El nombre de la categoría no puede ser solo números.", 400)
+        if es_solo_numeros(valores_categorias["descripcion"]):
+            return respuesta_json_fail("La descripción de la categoría no puede ser solo números.", 400)
         if valores_categorias["nombre"]:
             if not es_solo_letras(valores_categorias["nombre"]):
                 return respuesta_json_fail("El nombre solo puede contener letras.", 400)
@@ -87,7 +101,9 @@ def actualizar_categorias():
 
         if filas_afectadas == 0:
             return respuesta_json_fail("No se encontró la categoría o no hubo cambios.", 404)
-
+        if filas_afectadas == 1:
+            return respuesta_json_fail("La categoría ya se encuentra con ese nombre", 200)
+        
         return respuesta_json_success({"mensaje": "Categoría actualizada exitosamente"}, 200)
 
     except Exception as e:
@@ -105,6 +121,9 @@ def cambiar_estado_categorias():
             "id_categoria": datos.get("id_categoria"),
             "estado": datos.get("estado"),
         }
+        if es_solo_numeros(valores_categorias["estado"]):
+            return respuesta_json_fail("El estado de la categoria solo puede contener letras.", 400)
+
         if not es_solo_numeros(valores_categorias["id_categoria"]):
             return respuesta_json_fail("El id de la categoria solo puede contener numeros.", 400)
 

@@ -19,11 +19,11 @@ def get_pedidos():
 @pedidos.route('/ingresar_pedidos', methods=['POST'])
 def ingresar_pedido():
     try:
+        
         pedido = {
             'id_producto': request.json.get('id_producto'),
             'cantidad': request.json.get('cantidad')
         }
-        
         if not pedido['id_producto'] or not pedido['cantidad']:
             return respuesta_json_fail('Todos los campos deben estar rellenos', 400)
         if not es_solo_numeros(str(pedido["id_producto"])):
@@ -44,7 +44,8 @@ def actualizar_pedido():
             'id_pedido': request.json.get('id_pedido'),
             'estado': request.json.get('estado')
         }
-        
+        if es_solo_numeros(pedido['estado']):
+            return respuesta_json_fail('El estado solo puede contener letras', 400)
         if not pedido['id_pedido'] or not pedido['estado']:
             return respuesta_json_fail('Todos los campos deben estar rellenos', 400)
         if not es_solo_numeros(str(pedido["id_pedido"])):

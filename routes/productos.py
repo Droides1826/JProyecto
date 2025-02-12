@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from utils.respuestas import respuesta_json_success, respuesta_json_fail
 from services.productos_services import  ingresar_producto, obtener_datos_producto, update_products, cambiar_estado_productos
-from utils.Validaciones import validacion_de_nombre, validacion_de_cantidad,validacion_de_precio ,validacion_de_nombre,validacion_de_id_categoria
+from utils.Validaciones import es_solo_numeros,validacion_de_nombre, validacion_de_cantidad,validacion_de_precio ,validacion_de_nombre,validacion_de_id_categoria
 
 productos = Blueprint('productos', __name__)
 
@@ -51,30 +51,31 @@ def actualizar_producto():
     try:
         datos = request.json
         valores_producto = {
-            'id_producto': datos.get('id_producto'),
-            'nombre': datos.get('nombre', '').strip(),
-            'descripcion': datos.get('descripcion', '').strip(),
-            'precio': datos.get('precio'),
-            'id_categoria': datos.get('id_categoria' ),
-            'cantidad': datos.get('cantidad'),
+            'id_producto': str(datos.get('id_producto')),
+            'nombre': str(datos.get('nombre', '')).strip(),
+            'descripcion': str(datos.get('descripcion', '')).strip(),
+            'precio': str(datos.get('precio', '')),
+            'cantidad': str(datos.get('cantidad', '')),
         }
 
-        if validacion_de_precio(valores_producto['precio']):
-            return respuesta_json_fail('El precio debe contener solo numeros.', 400)
-
-        valores_producto = {k: v for k, v in valores_producto.items() if v not in [None, '', ' ']}
-
-        if 'id_producto' not in valores_producto:
+        if not valores_producto['id_producto']:
             return respuesta_json_fail("El ID del producto es obligatorio.", 400)
         
+        if not es_solo_numeros(valores_producto['id_producto']):
+            return respuesta_json_fail("El ID del producto debe ser un número.", 400)
+
+        if valores_producto['precio'] and not valores_producto['precio'].isdigit():
+            return respuesta_json_fail('El precio debe contener solo números, sin puntos ni comas ni letras', 400)
+
+        valores_producto = {k: v for k, v in valores_producto.items() if v not in [None, '', ' ']}
 
         filas_afectadas = update_products(valores_producto)
 
         if filas_afectadas == 0:
             return respuesta_json_fail("No se encontró el producto o no hubo cambios.", 404)
 
-        return respuesta_json_success({'mensaje': 'Producto actualizado exitosamente'}, 200)
-    
+        return respuesta_json_success({"mensaje": "Producto actualizado exitosamente"}, 200)
+
     except Exception as e:
         return respuesta_json_fail(str(e), 500)
 
@@ -91,16 +92,19 @@ def cambiar_estado_product():
             'estado': datos['estado']
         }
         
+        if not es_solo_numeros(valores_producto['id_producto']):
+            return respuesta_json_fail("El ID del producto debe ser un número.", 400)
         filas_afectadas = cambiar_estado_productos(valores_producto)
         
         if filas_afectadas == 0:
             return respuesta_json_fail("No se encontró la categoría o no hubo cambios.", 404)
-        
+
         if filas_afectadas == 1:
             return respuesta_json_fail("La categoria ya se encuentra en ese estado", 200)
-        
+
         if filas_afectadas == 2:
             return respuesta_json_fail("No se puede cambiar el estado de la categoría : no existe, Debe ser Activo o Inactivo ", 400)
+
 
         return respuesta_json_success({"mensaje": "Categoría actualizada exitosamente"}, 200)
 
