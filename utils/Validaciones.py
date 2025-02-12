@@ -28,7 +28,7 @@ def longitud_valida(valor: str, min_length: int, max_length: int) -> bool:
 
 def es_numero_decimal(valor: str) -> bool:
     """Verifica si el valor es un número decimal válido."""
-    return bool(re.match(r'^\d+(\.\d+)?$', valor))
+    return bool(re.match(r'^\d+(\.,\d+)?$', valor))
 
 def es_fecha_valida(fecha: str) -> bool:
     """Verifica si el valor es una fecha en formato YYYY-MM-DD."""
@@ -48,35 +48,51 @@ def es_solo_numeros(valor) -> bool:
     return str(valor).isdigit()
 
 
+
 def validacion_de_nombre(nombre: str) -> bool:
     if not nombre:
-        return respuesta_json_fail('El nombre del producto no puede estar vacío.')
+        print("El nombre del producto es obligatorio.")
+        return False
     if not es_solo_letras(nombre):
-        return respuesta_json_fail('El nombre del producto solo puede contener letras.')
+        print("El nombre del producto debe contener solo letras y no caracteres especiales.")
+        return False
+        
     if tiene_caracteres_especiales(nombre):
-        return respuesta_json_fail('El nombre del producto no puede contener caracteres especiales.')
+        print("El nombre del producto no puede contener caracteres especiales.")
+        return False
     if not limite_caracteres(nombre, 30):
-        return respuesta_json_fail('El nombre del producto no puede tener más de 30 caracteres.')
+        print("El nombre del producto no puede tener más de 30 caracteres.")
+        return False
     return True
 
 def validacion_de_precio(precio: str) -> bool:
     if not precio:
-        return respuesta_json_fail('El precio del producto no puede estar vacío.')
+        return False
     if not es_numero_decimal(precio):
-        return respuesta_json_fail('El precio del producto solo puede contener números ')
+        return False
+    if not limite_caracteres(precio, 10):
+        return False
     return True
-
 
 def validacion_de_cantidad(cantidad: str) -> bool:
     if not cantidad:
-        return respuesta_json_fail('La cantidad del producto no puede estar vacía.')
+        return False
     if not es_solo_numeros(cantidad):
-        return respuesta_json_fail('La cantidad del producto solo puede contener números.')
+        return False
     return True
 
 def validacion_de_id_categoria(id_categoria: str) -> bool:
     if not id_categoria:
-        return respuesta_json_fail('El ID de la categoría no puede estar vacío.')
+        return False
     if not es_solo_numeros(id_categoria):
-        return respuesta_json_fail('El ID de la categoría solo puede contener números.')
+        return False
+    return True
+
+def validacion_de_cantidad(cantidad: str) -> bool:
+    if not cantidad:
+        return False
+    if not es_solo_numeros(cantidad):
+        return False
+    if not limite_caracteres(cantidad, 4):
+        return False
     return True

@@ -95,8 +95,7 @@ def cambiar_estado_productos(Valores_productos):
     estado = Valores_productos["estado"]
     
     lower_estado = estado.lower()
-    if lower_estado not in ['activo', 'inactivo']:
-        return 2
+    
     valor_antiguo = db.ejecutar_consulta("SELECT estado FROM productos WHERE id_producto = %s", (id_producto,))
     if not valor_antiguo:
         return 0
