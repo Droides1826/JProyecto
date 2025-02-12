@@ -63,8 +63,9 @@ def validacion_de_precio(precio: str) -> bool:
     if not precio:
         return respuesta_json_fail('El precio del producto no puede estar vacío.')
     if not es_numero_decimal(precio):
-        return respuesta_json_fail('El precio del producto solo puede contener números decimales.')
+        return respuesta_json_fail('El precio del producto solo puede contener números ')
     return True
+
 
 def validacion_de_cantidad(cantidad: str) -> bool:
     if not cantidad:

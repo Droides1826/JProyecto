@@ -4,37 +4,46 @@ from utils.respuestas import  respuesta_json_fail, respuesta_json_success
 
 def obtener_datos_producto():
     db = BaseDatos()
-    cursor = db.conectar()
-    query = "SELECT id_producto, nombre, descripcion, precio, id_categoria, cantidad, estado FROM productos WHERE estado = 1"
-    cursor.execute(query)
-    resultados = cursor.fetchall()
-    cursor.close()
-    productos = []
-    for resultado in resultados:
-        producto = {
-            'id_producto': resultado[0],
-            'nombre': resultado[1],
-            'descripcion': resultado[2],
-            'precio': resultado[3],
-            'id_categoria': resultado[4],
-            'cantidad': resultado[5],
-            'estado': 'activo' if resultado[6] == 1 else None
-            
+    query = """
+    SELECT id_producto, nombre, descripcion, precio, id_categoria, cantidad, estado 
+    FROM productos 
+    WHERE estado = 1
+    """
+    productos = db.ejecutar_consulta(query)
+    
+    productos_ = [
+        {
+            "id_producto": producto[0],
+            "nombre": producto[1],
+            "descripcion": producto[2],
+            "precio": producto[3],
+            "id_categoria": producto[4],
+            "cantidad": producto[5],
+            "estado": "activo" if producto[6] == 1 else None
         }
-        productos.append(producto) 
-    return productos
-
+        for producto in productos
+    ]
+    return productos_
 
 def ingresar_producto(valores_producto):
+    
     try:
         db = BaseDatos()
-        query = "INSERT INTO productos (nombre, descripcion, precio, id_categoria, cantidad, imagen) VALUES (%s, %s, %s, %s, %s, %s)"
+        query = "INSERT INTO productos (nombre, descripcion, precio, id_categoria, cantidad) VALUES (%s, %s, %s, %s, %s)"
+        
+
         valores= (
             valores_producto['nombre'],
             valores_producto['descripcion'],
             valores_producto['precio'],
+            valores_producto['id_categoria'],
             valores_producto['cantidad'],
+
             )
+        existe = db.ejecutar_consulta("SELECT estado FROM categorias WHERE id_categoria = %s", (valores_producto['id_categoria'],))
+        if not existe:
+            return 0
+    
         db.ejecutar_accion(query, valores)
         return  respuesta_json_success ({'mensaje': 'Producto ingresado exitosamente'})
     except Exception as e:
