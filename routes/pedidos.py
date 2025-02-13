@@ -45,7 +45,7 @@ def actualizar_pedido():
             'estado': request.json.get('estado')
         }
         if es_solo_numeros(pedido['estado']):
-            return respuesta_json_fail('El estado solo puede contener letras', 400)
+            return respuesta_json_fail('El estado solo puede contener PENDIENTE-EN PROCESO-ENVIADO/CANCELADO', 400)
         if not pedido['id_pedido'] or not pedido['estado']:
             return respuesta_json_fail('Todos los campos deben estar rellenos', 400)
         if not es_solo_numeros(str(pedido["id_pedido"])):

@@ -68,17 +68,17 @@ def cambiar_estado_pedido(pedido):
 
 
         transiciones_validas = {
-            3: [4, 5, 6],  
+            3: [4, 6],  
             4: [5, 6],      
             5: [],          
             6: []           
         }
         if estado_nuevo not in transiciones_validas.get(estado_actual, []):
-            return respuesta_json_fail(f'No se puede cambiar el estado de {estados_validos[estado_actual]} a {estados_validos[estado_nuevo]}', 400)
+            return respuesta_json_fail(f'No se puede cambiar el estado de {estados_validos[estado_actual]} a {estados_validos[estado_nuevo]}, Orden de los estados: PENDIENTE-EN PROCESO-ENVIADO/CANCELADO', 400)
         query = "UPDATE pedidos SET estado = %s WHERE id_pedido = %s"
         db.ejecutar_accion(query, (estado_nuevo, pedido['id_pedido']))
 
-        return respuesta_json_success({'mensaje': 'Estado del pedido actualizado exitosamente'})
+        return respuesta_json_success({'mensaje': 'Estado del pedido actualizado exitosamente a ' + estados_validos[estado_nuevo]})
 
     except Exception as e:
         return respuesta_json_fail(str(e), 500)

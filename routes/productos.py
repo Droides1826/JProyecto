@@ -21,7 +21,7 @@ def create_product():
         
         v_nombre=validacion_de_nombre(valores_producto['nombre'])
         if v_nombre is not True:
-            return respuesta_json_fail("El nombre del producto debe contener solo letras y no caracteres especiales.", 400)
+            return respuesta_json_fail("El nombre del producto debe contener solo letras y no caracteres especiales y un limite de 30 caracteres.", 400)
         
         validacion_precio = validacion_de_precio(valores_producto['precio'])
         if validacion_precio is not True:
@@ -80,7 +80,7 @@ def actualizar_producto():
         
         v_precio = validacion_de_precio(valores_producto['precio'])
         if v_precio is not True:
-            return respuesta_json_fail("El precio debe ser un número válido y sin caracteres especiales.", 400)
+            return respuesta_json_fail("El precio debe ser un número válido y sin caracteres especiales y un limite de 10 numeros", 400)
         
         if valores_producto["descripcion"]:
             if not limite_caracteres(valores_producto["descripcion"], 255):
@@ -132,7 +132,7 @@ def cambiar_estado_product():
             return respuesta_json_fail("El producto ya se encuentra en ese estado.", 200)
 
         if filas_afectadas == 2:
-            return respuesta_json_fail("No se puede cambiar el estado del producto: no existe o el estado es inválido.", 400)
+            return respuesta_json_fail("No se puede cambiar el estado del producto: el estado es inválido.", 400)
 
         return respuesta_json_success({"mensaje": "Estado del producto actualizado exitosamente"}, 200)
 
