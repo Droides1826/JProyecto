@@ -5,9 +5,10 @@ from utils.respuestas import  respuesta_json_fail, respuesta_json_success
 def obtener_datos_producto():
     db = BaseDatos()
     query = """
-    SELECT id_producto, nombre, descripcion, precio, id_categoria, cantidad, estado 
-    FROM productos 
-    WHERE estado = 1
+    SELECT p.id_producto, p.nombre, p.descripcion, p.precio, c.nombre_categoria AS categoria, p.cantidad, p.estado 
+    FROM productos p
+    JOIN categorias c ON p.id_categoria = c.id_categoria
+    WHERE p.estado = 1
     """
     productos = db.ejecutar_consulta(query)
     
@@ -17,7 +18,7 @@ def obtener_datos_producto():
             "nombre": producto[1],
             "descripcion": producto[2],
             "precio": producto[3],
-            "id_categoria": producto[4],
+            "categoria": producto[4],
             "cantidad": producto[5],
             "estado": "activo" if producto[6] == 1 else None
         }

@@ -30,17 +30,19 @@ def ingresar_pedidos(valores):
         if not producto:
             return respuesta_json_fail('El id del producto no existe en la base de datos', 400)
         
-        stock_disponible = producto[0][0]  
-        precio_unitario = producto[0][1]  
+        stock_disponible = int(producto[0][0])
+        precio_unitario = float(producto[0][1])
 
-        if valores['cantidad'] > stock_disponible:
+        cantidad = int(valores['cantidad'])
+
+        if cantidad > stock_disponible:
             return respuesta_json_fail(f'Stock insuficiente. Solo hay {stock_disponible} unidades disponibles.', 400)
 
         query = "INSERT INTO pedidos (id_producto, cantidad, precio_unitario) VALUES (%s, %s, %s)"
-        valores_tupla = (valores['id_producto'], valores['cantidad'], precio_unitario)
+        valores_tupla = (valores['id_producto'], cantidad, precio_unitario)
         db.ejecutar_accion(query, valores_tupla)
 
-        nuevo_stock = stock_disponible - valores['cantidad']
+        nuevo_stock = stock_disponible - cantidad
         db.ejecutar_accion("UPDATE productos SET cantidad = %s WHERE id_producto = %s", (nuevo_stock, valores['id_producto']))
         
         return respuesta_json_success({'mensaje': 'Pedido ingresado exitosamente'})

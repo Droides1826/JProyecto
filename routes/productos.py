@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from utils.respuestas import respuesta_json_success, respuesta_json_fail
 from services.productos_services import  ingresar_producto, obtener_datos_producto, update_products, cambiar_estado_productos
-from utils.Validaciones import es_solo_numeros,validacion_de_nombre, validacion_de_cantidad,validacion_de_precio ,validacion_de_nombre,validacion_de_id_categoria,limite_caracteres,es_solo_letras
+from utils.Validaciones import validacion_precio,validacion_nombre,es_solo_numeros,validacion_de_nombre, validacion_de_cantidad,validacion_de_precio ,validacion_de_nombre,validacion_de_id_categoria,limite_caracteres,es_solo_letras
 
 productos = Blueprint('productos', __name__)
 
@@ -73,12 +73,12 @@ def actualizar_producto():
         if not valores_producto['id_producto']:
             return respuesta_json_fail("El ID del producto es obligatorio.", 400)
         
-        v_nombre=validacion_de_nombre(valores_producto['nombre'])
+        v_nombre=validacion_nombre(valores_producto['nombre'])
         if v_nombre is not True:
             print(v_nombre)
             return respuesta_json_fail("El nombre del producto debe contener solo letras y no caracteres especiales y un limite de 30 caracteres.", 400)
         
-        v_precio = validacion_de_precio(valores_producto['precio'])
+        v_precio = validacion_precio(valores_producto['precio'])
         if v_precio is not True:
             return respuesta_json_fail("El precio debe ser un número válido y sin caracteres especiales y un limite de 10 numeros", 400)
         

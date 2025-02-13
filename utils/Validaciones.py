@@ -65,6 +65,16 @@ def validacion_de_nombre(nombre: str) -> bool:
         return False
     return True
 
+
+def validacion_nombre(nombre: str) -> bool:  
+    if tiene_caracteres_especiales(nombre):
+        print("El nombre del producto no puede contener caracteres especiales.")
+        return False
+    if not limite_caracteres(nombre, 30):
+        print("El nombre del producto no puede tener más de 30 caracteres.")
+        return False
+    return True
+
 def validacion_de_precio(precio: str) -> bool:
     if not precio:
         return False
@@ -73,6 +83,15 @@ def validacion_de_precio(precio: str) -> bool:
     if not limite_caracteres(precio, 10):
         return False
     return True
+
+def validacion_precio(precio: str) -> bool:
+    if not limite_caracteres(precio, 10):
+        return False
+    
+    return True
+    
+
+
 
 def validacion_de_cantidad(cantidad: str) -> bool:
     if not cantidad:
