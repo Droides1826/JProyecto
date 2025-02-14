@@ -1,4 +1,4 @@
-from .respuestas import respuesta_json_fail
+
 import re
 
 def es_solo_numeros(valor: str) -> bool:
@@ -65,9 +65,14 @@ def validacion_de_nombre(nombre: str) -> bool:
     return True
 
 def validacion_nombre(nombre: str) -> bool:  
-    if tiene_caracteres_especiales(nombre):
+    if not nombre:
+        print("El nombre del producto es obligatorio.")
         return False
     if not limite_caracteres(nombre, 30):
+        print("El nombre del producto no puede tener más de 30 caracteres.")
+        return False
+    if es_solo_numeros(nombre):
+        print("El nombre del producto no puede ser solo números.")
         return False
     return True
 
@@ -82,6 +87,8 @@ def validacion_de_precio(precio: str) -> bool:
 
 def validacion_precio(precio: str) -> bool:
     if not limite_caracteres(precio, 10):
+        return False
+    if not es_solo_numeros(precio):
         return False
     return True
 
@@ -105,5 +112,16 @@ def validacion_de_cantidad(cantidad: str) -> bool:
     if not es_solo_numeros(cantidad):
         return False
     if not limite_caracteres(cantidad, 4):
+        return False
+    return True
+
+
+
+def validacion_descripcion(descripcion: str) -> bool:
+    if not descripcion:
+        return True
+    if not limite_caracteres(descripcion, 255):
+        return False
+    if es_solo_numeros(descripcion):
         return False
     return True
